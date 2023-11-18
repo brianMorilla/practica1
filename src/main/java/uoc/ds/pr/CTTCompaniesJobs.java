@@ -52,14 +52,14 @@ public interface CTTCompaniesJobs {
      * @post If the worker code is new, the workers will be the same plus a new one.
      * If not, the worker's data will have been updated.
      */
-    public void addWorker(String id, String name, String surname, LocalDate dateOfBirth, Qualification qualification);
+    public void addWorker(String id, String name, String surname, LocalDate dateOfBirth, Qualification qualification) throws InsufficientSpaceException;
 
     /**
      * @pre True.
      * @post If the company code is new, the companies will be the same plus one new one.
      * If not, the company data will have been updated.
      */
-    public void addCompany(String id, String name, String description);
+    public void addCompany(String id, String name, String description) throws InsufficientSpaceException;
 
 
     /**
@@ -81,7 +81,7 @@ public interface CTTCompaniesJobs {
      * If the response is unfavorable, the count of rejected applications will increase by one.
      * If there are no pending requests, an error will be reported.
      */
-     public Request updateRequest(Status status, LocalDate date, String description) throws NoRequestException;
+     public Request updateRequest(Status status, LocalDate date, String description) throws NoRequestException, InsufficientSpaceException;
 
 
     /**
@@ -92,7 +92,7 @@ public interface CTTCompaniesJobs {
      * an alternative will be added.
      * If either the company or the worker does not exist, an error will be reported.
      */
-     public Response signUpJobOffer(String workerId, String jobOfferId) throws JobOfferNotFoundException, WorkerNotFoundException, WorkerAlreadyEnrolledException;
+     public Response signUpJobOffer(String workerId, String jobOfferId) throws JobOfferNotFoundException, WorkerNotFoundException, WorkerAlreadyEnrolledException, NoWorkerException, WorkerNotQuliMinimus;
 
 
     /**

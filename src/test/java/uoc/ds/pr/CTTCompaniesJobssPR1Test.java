@@ -34,7 +34,7 @@ public class CTTCompaniesJobssPR1Test {
     }
 
     @Test
-    public void addWorkerTest() {
+    public void addWorkerTest() throws InsufficientSpaceException {
 
         // GIVEN:
         initialState();
@@ -70,7 +70,7 @@ public class CTTCompaniesJobssPR1Test {
     }
 
     @Test
-    public void addCompanyTest() {
+    public void addCompanyTest() throws InsufficientSpaceException {
 
         // GIVEN:
         initialState();
@@ -94,7 +94,7 @@ public class CTTCompaniesJobssPR1Test {
         companyXXX = this.cttCompaniesJobs.getCompany("companyiD999");
         Assert.assertEquals("Company W", companyXXX.getName());
         Assert.assertEquals("the description (W)", companyXXX.getDescription());
-
+        System.out.println( this.cttCompaniesJobs.numCompanies());
         Assert.assertEquals(9, this.cttCompaniesJobs.numCompanies());
 
     }
@@ -159,7 +159,6 @@ public class CTTCompaniesJobssPR1Test {
         Assert.assertEquals(CTTCompaniesJobs.Status.ENABLED, request3.getStatus());
         Assert.assertEquals(createLocalDate("12-11-2023"), request3.getDateStatus());
         Assert.assertEquals("OK (id3)", request3.getDescriptionStatus());
-
     }
 
     @Test

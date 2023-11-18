@@ -1,9 +1,10 @@
-package uoc.ds.pr.util;
+package uoc.ds.pr;
 
 import edu.uoc.ds.adt.sequential.Queue;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import uoc.ds.pr.util.QueueLinkedList;
 
 public class QueueLinkedListTest {
     Queue<Integer> queue;
