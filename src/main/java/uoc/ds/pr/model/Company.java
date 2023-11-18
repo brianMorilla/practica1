@@ -3,12 +3,11 @@ package uoc.ds.pr.model;
 import edu.uoc.ds.adt.sequential.LinkedList;
 
 public class Company {
-    private String id;
+    private final String id;
     private String name;
     private String description;
-    private LinkedList<JobOffer> jobOffersByCompany;
+    private final LinkedList<JobOffer> jobOffersByCompany;
 
-    private JobOffer jobOffer;
     public Company(String id, String name, String description) {
         this.id = id;
         this.name = name;
@@ -59,8 +58,5 @@ public class Company {
                 '}';
     }
 
-    public void setJobOffer(JobOffer jobOffer) {
-        this.jobOffer = jobOffer;
-    }
 
 }

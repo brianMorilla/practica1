@@ -4,15 +4,14 @@ import edu.uoc.ds.adt.sequential.LinkedList;
 import uoc.ds.pr.CTTCompaniesJobs;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Worker {
-    private String id;
+    private final String id;
     private String name;
     private String surname;
     private LocalDate  dateOfBirth;
     private CTTCompaniesJobs.Qualification qualification;
-    private LinkedList<JobOffer> jobOffersByWorker;
+    private final LinkedList<JobOffer> jobOffersByWorker;
 
     private int workingDays;
 

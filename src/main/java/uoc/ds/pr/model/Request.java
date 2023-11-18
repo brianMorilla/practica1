@@ -1,21 +1,19 @@
 package uoc.ds.pr.model;
 
 import uoc.ds.pr.CTTCompaniesJobs;
-import uoc.ds.pr.CTTCompaniesJobsImpl;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Request {
     private String id;
-    private String jobOfferId;
+    private final String jobOfferId;
     private JobOffer jobOffer;
-    private String  companyId;
+    private final String  companyId;
     private String description;
-    private CTTCompaniesJobs.Qualification  minQualification;
-    private Integer maxWorkers;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private final CTTCompaniesJobs.Qualification  minQualification;
+    private final Integer maxWorkers;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
     private CTTCompaniesJobs.Status status;
 
     private LocalDate dateStatus;
@@ -34,12 +32,10 @@ public class Request {
         this.status = CTTCompaniesJobs.Status.PENDING;
     }
 
-    public Request updateRequest(CTTCompaniesJobs.Status status, LocalDate dateStatus, String description ){
+    public void updateRequest(CTTCompaniesJobs.Status status, LocalDate dateStatus, String description ){
         this.status = status;
         this.dateStatus = dateStatus;
         this.descriptionStatus = description;
-
-        return this;
     }
 
 

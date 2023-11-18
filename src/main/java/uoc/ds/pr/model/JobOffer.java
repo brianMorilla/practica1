@@ -8,26 +8,24 @@ import java.time.LocalDate;
 
 
 public class JobOffer {
-    private String id;
-    private String idCompany;
+    private final String id;
     private Company company;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private  int workingDays;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
+    private final int workingDays;
     private int NumWorkers;
-    private CTTCompaniesJobs.Qualification minQualification;
+    private final CTTCompaniesJobs.Qualification minQualification;
     private int numSubstitutes;
-    private QueueLinkedList<Enrollment> enrollments;
-    private QueueLinkedList<Enrollment> enrollmentsSubstitutes;
-    private int maxWorquersRequest;
-    private LinkedList<Rating> listRatings;
+    private final QueueLinkedList<Enrollment> enrollments;
+    private final QueueLinkedList<Enrollment> enrollmentsSubstitutes;
+    private final int maxWorquersRequest;
+    private final LinkedList<Rating> listRatings;
     private double totalRating;
     private double mitjaTotalRating;
     private int numTotalRatings;
 
     public JobOffer(String id, String idCompany, LocalDate startDate, LocalDate endDate, int workingDays, CTTCompaniesJobs.Qualification minQualification, int maxWorquersRequest) {
         this.id = id;
-        this.idCompany = idCompany;
         this.startDate = startDate;
         this.endDate = endDate;
         this.workingDays = calculateWorkingDays(startDate, endDate)-1;

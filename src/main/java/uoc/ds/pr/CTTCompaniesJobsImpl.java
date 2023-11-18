@@ -15,11 +15,11 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
     //definició dels objectes segons la PAC1
     private final Worker[] workers;
     private int numWorkers;
-    private Company[] companies;
+    private final Company[] companies;
     private int numCompanies;
-    private JobOffer[] jobOffers;
+    private final JobOffer[] jobOffers;
     private int numJobOffers;
-    private QueueLinkedList<Request> requests;
+    private final QueueLinkedList<Request> requests;
     private int numTotalRequests;
     private int numPendingRequests;
     private int numRejectedRequests;
@@ -27,32 +27,32 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
         Contructor principal de la classe CTTCompaniesJobsImpl
      */
     public CTTCompaniesJobsImpl() {
-        this.workers = new Worker[MAX_NUM_WORKERS];
-        this.companies = new Company[MAX_NUM_COMPANIES];
-        this.jobOffers =  new JobOffer[MAX_NUM_JOBOFFERS];
-        this.requests = new QueueLinkedList<>();
-        this.numWorkers = 0;
-        this.numCompanies =0;
-        this.numJobOffers =0;
-        this.numTotalRequests =0;
-        this.numPendingRequests =0;
-        this.numRejectedRequests =0;
+        this.workers            = new Worker[MAX_NUM_WORKERS];
+        this.companies          = new Company[MAX_NUM_COMPANIES];
+        this.jobOffers          = new JobOffer[MAX_NUM_JOBOFFERS];
+        this.requests           = new QueueLinkedList<>();
+        this.numWorkers         = 0;
+        this.numCompanies       = 0;
+        this.numJobOffers       = 0;
+        this.numTotalRequests   = 0;
+        this.numPendingRequests = 0;
+        this.numRejectedRequests = 0;
     }
 
     @Override
     public void addWorker(String id, String name, String surname, LocalDate dateOfBirth, Qualification qualification) throws InsufficientSpaceException {
-    // trobar la  primera posició disponible per el nou traballador
+    // trobar la primera posició disponible pel nou traballador
         int index = findEmptyWorkerIndex();
         boolean existingWorker = false;
         if(numWorkers > 0){
             //buscar si el worker existe
-            for (int i = 0; i < workers.length; i++) {
-                if (workers[i] != null && workers[i].getId().equals(id)) {
+            for (Worker worker : workers) {
+                if (worker != null && worker.getId().equals(id)) {
                     // Si el ID del treballador coincideix, actualitzar dades
-                    workers[i].setName(name);
-                    workers[i].setSurname(surname);
-                    workers[i].setDateOfBirth(dateOfBirth);
-                    workers[i].setQualification(qualification);
+                    worker.setName(name);
+                    worker.setSurname(surname);
+                    worker.setDateOfBirth(dateOfBirth);
+                    worker.setQualification(qualification);
                     existingWorker = true;
                     break;
                 }
@@ -98,7 +98,7 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
     // Mètode per afegir a l'objecte companies la companyia que es crea
     @Override
     public void addCompany(String id, String name, String description) throws InsufficientSpaceException {
-        Boolean companyExist = false;
+        boolean companyExist = false;
         // Verificar si la compañía ya existe
         for (int i = 0; i < numCompanies; i++) {
             if (companies[i].getId().equals(id)) {
@@ -143,11 +143,12 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
 
     // Mètode per afegir a l'objecte jobOffers l'oferta de treball
     private void addJobOffer(Request request) throws InsufficientSpaceException {
-        Boolean jobOfferExist = false;
+        boolean jobOfferExist = false;
         // Verificar que no existeixi el joboffer
         for (int i = 0; i < numJobOffers; i++) {
             if (jobOffers[i].getId().equals(request.getJobOfferId())) {
                 jobOfferExist = true;
+                break;
             }
         }
         if (numJobOffers < MAX_NUM_JOBOFFERS ) {
@@ -171,29 +172,21 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
             throw new NoRequestException();
         }
         request.updateRequest(status,date,description);
+        addJobOffer(request);
+        JobOffer jobOffer = request.getJobOffer();
+        Company company = jobOffer.getCompany();
+
         //en funció de l'estat de la request, es treballen un totals o altres
         if (request.getStatus().equals(Status.ENABLED)) {
-            addJobOffer(request);
-            JobOffer jobOffer = request.getJobOffer();
-            Company company = jobOffer.getCompany();
-            company.setJobOffer(jobOffer);
             company.addOffersByCompany(jobOffer);
             numPendingRequests--;
         }
         else if(request.getStatus().equals(Status.DISABLED)) {
             numRejectedRequests++;
             numJobOffers--;
-            addJobOffer(request);
-            JobOffer jobOffer = request.getJobOffer();
-            Company company = jobOffer.getCompany();
-            company.setJobOffer(jobOffer);
             numPendingRequests--;
         }else{
             numPendingRequests++;
-            addJobOffer(request);
-            JobOffer jobOffer = request.getJobOffer();
-            Company company = jobOffer.getCompany();
-            company.setJobOffer(jobOffer);
         }
         return request;
     }
@@ -202,7 +195,7 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
 
     // Mètode per registrsr un treballador a una oferta de feina
     @Override
-    public Response signUpJobOffer(String workerId, String jobOfferId) throws JobOfferNotFoundException, WorkerNotFoundException, WorkerAlreadyEnrolledException, NoWorkerException, WorkerNotQuliMinimus {
+    public Response signUpJobOffer(String workerId, String jobOfferId) throws JobOfferNotFoundException, WorkerNotFoundException, WorkerAlreadyEnrolledException {
             //aquests blocs son per determinar els possibles errors i tornar les excepcions corresponents
             Worker worker = getWorker(workerId);
             if(worker == null){
@@ -222,7 +215,7 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
             if(jobOffer1.getEnrollments().size() < jobOffer1.getMaxWorquersRequest() ){
                 //mirar si el treballador ja està assignat
                 if(!jobOffer1.isWorkerInEnroolementForJObOffer(worker.getId())){
-                    Enrollment enrollment = new Enrollment(jobOffer1,worker,false);
+                    Enrollment enrollment = new Enrollment(worker,false);
                     worker.addOffersByWorker(jobOffer1);
                     jobOffer1.addEnrollement(enrollment,false);
                     return Response.ACCEPTED;
@@ -231,7 +224,7 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
                 }
             }else{
                 //suplent
-                Enrollment enrollment = new Enrollment(jobOffer1,worker,true);
+                Enrollment enrollment = new Enrollment(worker,true);
                 jobOffer1.addEnrollement(enrollment,true);
                 return Response.SUBSTITUTE;
             }
@@ -256,11 +249,11 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
 
     @Override
     public Iterator<JobOffer> getAllJobOffers() throws NOJobOffersException {
-        if (numJobOffers == 0 || jobOffers == null || jobOffers.length == 0) {
+        if (numJobOffers == 0 || jobOffers.length == 0) {
             throw new NOJobOffersException(); // Manejo si no hay ofertas de trabajo
         }
         JobOffer[] allJobOffers = Arrays.copyOf(jobOffers, numJobOffers);
-        return new Iterator<JobOffer>() {
+        return new Iterator<>() {
             private int currentIndex = 0;
             @Override
             public boolean hasNext() {
@@ -344,7 +337,6 @@ public class CTTCompaniesJobsImpl implements CTTCompaniesJobs {
         if(numJobOffers ==0){
             throw new NOJobOffersException();
         }
-        JobOffer jobOffer = null;
         //recorrer totes les jobOffers
         double maxRating =0;
         JobOffer jobOfferTheBest = null;
